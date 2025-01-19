@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #fdf5e6;
+    color: #333;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .main-content h1 {
+    margin-top: 50px;
+    font-size: 2.5rem;
+    color: #ff6f61;
+  }
+  
+  .clickable-star {
+    width: 100px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .guidebook {
+    margin-top: 40px;
+  }
+  
+  .toggle-btn {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .collapsible {
+    margin-top: 20px;
+    display: none;
+    text-align: left;
+    padding: 10px 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .collapsible ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .collapsible ul li {
+    margin: 5px 0;
+  }
+  

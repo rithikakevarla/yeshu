@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letters to My Love</title>
+    <style>
+        body {
+            background-color: #000;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff69b4;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .letters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .letter {
+            background: #1a1a1a;
+            border: 1px solid #ff69b4;
+            border-radius: 8px;
+            padding: 20px;
+            width: 220px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter:hover {
+            transform: scale(1.05);
+            background: #333;
+        }
+
+        .letter::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 105, 180, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .letter-emoji {
+            font-size: 2.5em;
+            color: #ff69b4;
+        }
+
+        .letter-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        .letter-title:hover {
+            color: #ff69b4;
+        }
+
+        .heart {
+            position: fixed;
+            pointer-events: none;
+            animation: floatHeart 4s ease-in-out;
+            z-index: 1000;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        #audio-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 0, 51, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .audio-control {
+            font-size: 2em;
+            cursor: pointer;
+            color: #ff69b4;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .audio-control:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        #glowingText {
+        color: #ff69b4; /* Soft pink */
+        font-size: 1.2rem;
+        font-style: italic;
+        text-align: center;
+        margin: 20px auto;
+        max-width: 800px;
+        line-height: 1.8;
+        text-shadow: 0 0 5px #95188e, 0 0 10px #95188e, 0 0 20px #95188e;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4;
+        }
+        to {
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <h1>💌 Letters to My Love 💌</h1>
+    <p id="glowingText">
+        I could write a million letters, and still, it wouldn’t be enough to fully capture just how much you mean to me. 
+        But that’s the beauty of it—every letter is a reminder of 
+        how much i love you and just how lucky I am to have you ANDDDD-
+        to let you know how cool you are.
+    </p>
+    <div class="letters-container">
+        <!-- Your existing letters here -->
+        <div class="letter" onclick="openLetter('rememberthis.txt')">
+            <div class="letter-emoji">💌</div>
+            <div class="letter-title">remember this?</div>
+        </div>
+        <!-- Add other letters as before -->
+        <div class="letter" onclick="openLetter('reread.txt')">
+            <div class="letter-emoji">💌</div>
+            <div class="letter-title">cause u said you need to reread this all ur life</div>
+            </div>
+            <div class="letter" onclick="openLetter('gm.txt')">
+                <div class="letter-emoji">💌</div>
+                <div class="letter-title">gooodmorning yesh</div>
+            </div> 
+            
+             
+    </div>
+
+    <div id="audio-player">
+        <div class="audio-control" onclick="toggleMusic()">🎵</div>
+        <audio id="bgMusic" loop>
+            <source src="music/kammani_e_premalekha.mp3" type="audio/mp3">
+        </audio>
+    </div>
+
+    <script>
+        function openLetter(fileName) {
+            const blob = new Blob([getLetterContent(fileName)], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const newTab = window.open(url, '_blank');
+            newTab.focus();
+            createHearts(20); // Create hearts when opening a letter
+        }
+
+        function getLetterContent(fileName) {
+            const letters = {
+                'goodmorning.txt': 'Good morning, my love! I woke up thinking about you...',
+                'LateNightTalks.txt': 'Every night, talking to you feels like the most peaceful thing...',
+                'i miss you.txt': 'Some moments in life are unforgettable, and most of mine are with you...',
+                'UnspokenFeelings.txt': 'There are things I never said out loud, but my heart has always whispered them to you...',
+                'DreamsWithYou.txt': 'Every dream I have about the future always has you in it...',
+                'understand.txt': 'I want you to know that I understand your silence...'
+            };
+            return letters[fileName] || 'This letter is currently empty.';
+        }
+
+        let isPlaying = false;
+        const music = document.getElementById('bgMusic');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                isPlaying = false;
+                document.querySelector('.audio-control').style.opacity = '0.5';
+            } else {
+                music.play();
+                isPlaying = true;
+                document.querySelector('.audio-control').style.opacity = '1';
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '🤍';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+
+        function createHearts(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(createHeart, i * 100);
+            }
+        }
+
+        // Create hearts periodically
+        setInterval(() => createHearts(5), 10000);
+
+        // Create hearts on mouse move
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.9) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '🤍';
+                heart.style.left = (e.pageX - 10) + 'px';
+                heart.style.top = (e.pageY - 10) + 'px';
+                document.body.appendChild(heart);
+            }
+        });
+    </script>
+</body>
+</html>

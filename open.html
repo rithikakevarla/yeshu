@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchanted Letters of Love</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            padding: 2rem;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff69b4;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: floatTitle 3s ease-in-out infinite;
+        }
+
+        @keyframes floatTitle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .emoji-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .emoji-card {
+            position: relative;
+            width: 180px;
+            height: 250px;
+            cursor: pointer;
+            text-decoration: none;
+            perspective: 1000px;
+        }
+
+        .emoji-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .emoji-card:hover .emoji-content {
+            transform: translateY(-20px) rotate(5deg);
+        }
+
+        .emoji-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji {
+            font-size: 100px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float 3s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            animation: sparkleFloat 3s infinite;
+        }
+
+        @keyframes sparkleFloat {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .label {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            color: white;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        #audio-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 105, 180, 0.3);
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        #audio-control:hover {
+            transform: scale(1.1);
+            background: rgba(255, 105, 180, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .emoji-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .emoji-card {
+                width: 150px;
+                height: 220px;
+            }
+
+            .emoji {
+                width: 120px;
+                height: 120px;
+                font-size: 80px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div id="audio-control" onclick="toggleMusic()">🎵</div>
+
+    <audio id="bgMusic" loop>
+        <source src="music/deeper-than-it-seems.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="container">
+        <h1>✨open when you..✨</h1>
+        
+        <div class="emoji-container">
+            <a class="emoji-card" href="letters/miss.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            🥺
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When You Miss Me</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/fight.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            💔
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When We Fight</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/demotivate.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            😔
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When You're Demotivated</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/mad.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            😠
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When I Get Mad at You</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/sleep.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            😴
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When You Can't Sleep</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            😫
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When things feel difficult</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/difficult.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            😫
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When things feel difficult</div>
+                    </div>
+                </div>
+            </a>
+            <a class="emoji-card" href="letters/productive.txt" target="_blank">
+                <div class="emoji-content">
+                    <div class="emoji-wrapper">
+                        <div class="emoji">
+                            🔥
+                            <div class="sparkles"></div>
+                        </div>
+                        <div class="label">When You dont feel productive</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let isPlaying = false;
+        const music = document.getElementById('bgMusic');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                isPlaying = false;
+                document.getElementById('audio-control').style.opacity = '0.5';
+            } else {
+                music.play();
+                isPlaying = true;
+                document.getElementById('audio-control').style.opacity = '1';
+            }
+        }
+
+        // Add sparkles dynamically
+        document.querySelectorAll('.emoji').forEach(emoji => {
+            const sparkles = emoji.querySelector('.sparkles');
+            setInterval(() => {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                sparkles.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 3000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

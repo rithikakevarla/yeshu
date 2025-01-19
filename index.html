@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter PIN</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .pin-container {
+            background: rgba(26, 0, 51, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+            animation: fadeIn 1s ease-in;
+            width: 280px;
+        }
+
+        h1 {
+            color: #ff69b4;
+            font-size: 1.5em;
+            margin: 0 0 15px 0;
+            text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+        }
+
+        .pin-display {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            letter-spacing: 8px;
+            font-size: 1.5em;
+            color: #ff69b4;
+            min-height: 30px;
+        }
+
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 0 auto;
+        }
+
+        .pin-button {
+            background: rgba(255, 105, 180, 0.1);
+            border: 1px solid #ff69b4;
+            color: white;
+            width: 45px;
+            height: 45px;
+            font-size: 1.2em;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 2px auto;
+        }
+
+        .pin-button:hover {
+            background: rgba(255, 105, 180, 0.3);
+            transform: scale(1.05);
+        }
+
+        .pin-button:active {
+            transform: scale(0.95);
+        }
+
+        .message {
+            color: #ff69b4;
+            font-size: 0.9em;
+            margin: 10px 0;
+            text-shadow: 0 0 3px rgba(255, 105, 180, 0.3);
+        }
+
+        .error-message {
+            color: #ff4466;
+            font-size: 0.8em;
+            min-height: 20px;
+            margin-top: 10px;
+        }
+
+        #clear-button {
+            background: rgba(255, 20, 147, 0.2);
+        }
+
+        #enter-button {
+            background: rgba(124, 252, 0, 0.1);
+            border-color: #7cfc00;
+        }
+
+        #enter-button:hover {
+            background: rgba(124, 252, 0, 0.2);
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff69b4;
+            opacity: 0;
+            animation: float 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="pin-container">
+        <h1>✨ Welcome! ✨</h1>
+        <div class="message">nik gurthundadh pakka 🙄</div>
+        <div class="pin-display" id="pinDisplay"></div>
+        <div class="pin-pad">
+            <button class="pin-button" onclick="addNumber('1')">1</button>
+            <button class="pin-button" onclick="addNumber('2')">2</button>
+            <button class="pin-button" onclick="addNumber('3')">3</button>
+            <button class="pin-button" onclick="addNumber('4')">4</button>
+            <button class="pin-button" onclick="addNumber('5')">5</button>
+            <button class="pin-button" onclick="addNumber('6')">6</button>
+            <button class="pin-button" onclick="addNumber('7')">7</button>
+            <button class="pin-button" onclick="addNumber('8')">8</button>
+            <button class="pin-button" onclick="addNumber('9')">9</button>
+            <button class="pin-button" id="clear-button" onclick="clearPin()">C</button>
+            <button class="pin-button" onclick="addNumber('0')">0</button>
+            <button class="pin-button" id="enter-button" onclick="checkPin()">✓</button>
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <script>
+        let currentPin = '';
+        const correctPin = '1918'; // Change this to your desired PIN
+        const pinDisplay = document.getElementById('pinDisplay');
+        const errorMessage = document.getElementById('errorMessage');
+
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            heart.innerHTML = '🤯';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        function addNumber(num) {
+            if (currentPin.length < 4) {
+                currentPin += num;
+                updatePinDisplay();
+                createHeart(event.clientX, event.clientY);
+            }
+        }
+
+        function updatePinDisplay() {
+            pinDisplay.textContent = '•'.repeat(currentPin.length);
+        }
+
+        function clearPin() {
+            currentPin = '';
+            updatePinDisplay();
+            errorMessage.textContent = '';
+        }
+
+        function checkPin() {
+            if (currentPin === correctPin) {
+                window.location.href = 'main.html'; // Make sure this matches your main page filename
+            } else {
+                errorMessage.textContent = 'Incorrect Try again! 🥲';
+                currentPin = '';
+                updatePinDisplay();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                addNumber(e.key);
+            } else if (e.key === 'Enter') {
+                checkPin();
+            } else if (e.key === 'Backspace' || e.key === 'Delete') {
+                clearPin();
+            }
+        });
+    </script>
+</body>
+</html>

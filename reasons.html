@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reasons Why I Love You</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .lyrics {
+    font-size: 1.2em;
+    color: #ff69b4;
+    margin-bottom: 30px;
+    animation: glow 2s ease-in-out infinite;
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    font-style: italic;
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 5px rgba(255, 105, 180, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(255, 105, 180, 0.8); }
+    100% { text-shadow: 0 0 5px rgba(255, 105, 180, 0.5); }
+}
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff69b4;
+            margin-bottom: 40px;
+        }
+
+        .stars-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 15px;
+            justify-items: center;
+            overflow-y: auto;
+            max-height: 80vh;
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        .star {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.5s ease;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        .star:hover {
+            transform: scale(1.3);
+        }
+
+        .star-number {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #ff69b4;
+            font-weight: bold;
+        }
+
+        .reason-card {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 0, 51, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            border: 2px solid #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .reason-number {
+            color: #ff69b4;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .reason-text {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff69b4;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 2;
+            transition: transform 0.3s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+        lyrics-container {
+    position: relative;
+    margin-bottom: 40px;
+    padding: 20px;
+}
+
+.lyrics {
+    font-size: 1.2em;
+    color: #ff69b4;
+    margin-bottom: 15px;
+    animation: glow 2s ease-in-out infinite;
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    font-style: italic;
+}
+
+.quote {
+    font-size: 1em;
+    color: #ff99cc;
+    margin-top: 15px;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.sparkle {
+    position: absolute;
+    pointer-events: none;
+    animation: sparkleAnimation 1.5s linear infinite;
+    z-index: 1;
+}
+
+.sparkle-container {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    overflow: hidden;
+}
+
+@keyframes sparkleAnimation {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+    100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff69b4;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+
+        .music-controls span {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='index.html'">← Back</button>
+    <div class="container">
+        <h1>Reasons Why I Love You</h1>
+        <div class="lyrics-container">
+            <div class="lyrics">
+                look at the stars<br>
+                look how they shine for you,<br>
+                and everything you do
+            </div>
+            <div class="quote">
+                "everything that you have ever done for me, even the smallest of the smallest
+                                has never gone unnoticed."
+            </div>
+        </div>
+        <div class="stars-container" id="starsContainer"></div>
+    </div>
+    
+
+    <div class="reason-card" id="reasonCard">
+        <div class="close-button" onclick="hideReason()">×</div>
+        <div class="reason-number" id="reasonNumber"></div>
+        <div class="reason-text" id="reasonText"></div>
+    </div>
+
+    <!-- Music Player -->
+    <audio id="backgroundMusic" loop>
+        <source src="music/yellow.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="music-controls" onclick="toggleMusic()">
+        <span id="musicStatus">Play Music</span>
+    </div>
+
+    <script>
+        const reasons = [
+  "He once said nee question edhaina na answer Ok and since then he agreed to most of it😭😭 reminds me of my dad..🥹😭",  
+  "Loves what I'm insecure abt",        
+  "When he would travel all the way even if it's just for seeing me for a while 🥹😭",
+  "His PRETTYYY eyes, want my kids to have them",
+  "Takes care when I'm on my periods",
+  "His hugsss🤌🏻",
+  "Gooooooood guy with dirty mind",
+  "Made me confident",
+  "Cries for me🤌🏻",
+  "Made me happyyyyy",
+  "His shoulders🤌🏻😭",
+  "His hands, my fav thing😭 I miss holding them",
+  "Thinks he doesn't deserve me",
+  "Makes me feeeeeel safe🥹❤️",
+  "Those hugs from behind🤌🏻",
+  "His cute family🫠",
+  "Understanding","Loves my character","Cares like no one","Erased my insecurities", "His warmth",
+"His smile",
+"Showed me what love is",
+"HE IS HANSOME ASF🫠💕🤌🏻",
+"Proved me that good guys exist",
+"Made pinterest boards for me 😭",
+"Drops me home",
+"Types paras",
+"Lovessss his family",
+"Respects my family",
+"Understands humanssss sooooo well",
+"Jeleous", 
+"POSSESSIVE 🤌🏻",
+"Spams me with calls when I'm sad",
+"Is there to listen to my shit 24/7",
+"HIS FASHION>>>>",
+"Saw a future with me",
+"BEST man out of all ik",
+  "His smell",
+  "He feels like homeeee",
+  "Those kissessss🫠",
+  "His voice",
+  "His calls ntg better than that😭",
+  "Makes me wanna be a gooood woman",
+  "Finds me cute, beautiful, sexy",
+  "Asked me if he can shift my pregnancy pain to him😭😭😭😭😭 anything else needed? 😭",
+  "HATEEEEESSS the guys who hurt me",
+  "Comes in auto for me",
+  "When he asks Rasheed to go🫠🤌🏻",
+  "Kisses me when I'm sad 🥹",
+  "Makes me happy happppyyyyy happyyyy",
+  "Treats me like a baby",
+  "Believes in me",
+  "Thinks I have a lot of potential",
+  "When he does 'hmmmm' and turns his face",
+  "He feeds me 😭🤌🏻",
+  "Finds it hard to be far from me",
+  "Deleted smash for me😭",
+  "My 1st loveeee",
+  "He's a gentleman",
+  "A miracle in my life",
+  "His PRESENCE",
+  "Only human apart from my fav who is so important to me",
+  "Thinks of me while doing it🫠",
+  "Has the same brain cells as me",
+  "His good morning texts",
+  "When he calls me kanna, nana, bangaram oh god",
+  "He made kadallale come true",
+  "When he waits for me near the washroom😭😭😭😭😭😭🤌🏻",
+  "Felt bad on my bday",
+  "His that thing 🫠",
+  "Told me good night story",
+  "Says sorriesss till I'm ok 😭",
+  "Loves me for my character 1st",
+  "The only guy who made me comfortable to me dumb silly self",
+  "Thought of marriage and how he would take care of me before relationship 🥹",
+  "Wanted to give up thinking I'm 'rich'😭 I'm not tho",
+  "Calls while driving",
+  "Loves my boobs 🫠",
+  "GIVES ME WHOLE DAMN ZOO 🦋",
+  "The way we are after fights is just so much love",
+  "Kisses my wounds",
+  "Small things matter",
+  "Acted like a man and initiated 🫠",
+//   "He once said nee question edhaina na answer Ok and since then he agreed to most of it😭😭 reminds me of my dad..🥹😭",
+//   "Loves what I'm insecure abt",
+  "Is the only human I found kissable🫠",
+  "His humour",
+  "The way he wants to work hard to be responsible and make his parents job easier 🥹",
+  "The way he kisses my neck",
+  "How he thinks I'm a god gift 😭",
+  "His romantic side 🦋🦋",
+  "His small gestures..",
+  "How smart he is ✨",
+  "The kid in him",
+  "I've never cried for anyone out of love, he is the 1st",
+  "The way he holds my hands even in public",
+  "Understands when I'm not ok",
+  "Gave me the love I've always dreamt of",
+  "He is all my firsts and lasts",
+  "HE IS GONNA COME TO MEET ME NOW SJSHJEKEKEKEKEKKRKR 🫠",
+  "He's respectful, loving, kind, loyal, handsome, honest, confident, charming, supportive, incomparable, attractive, a happy person, flawless, warming, special, patient, PERFECT...And he's mine :)",
+  "Cries if he sees me cry",
+  "Spam calls me till I'm fine",
+  "Finds my smile the most beautiful thing",
+  "Makes me laugh for hours nonstop",
+  "Takes care of me like my dad",
+  "Let's me call him daddy",
+  "Kopam chupisthad out of love which is hot",
+  "Thinpisthad everyday 😭",
+  "Gives the most beautiful looks when he sees me dressed up",
+  "Gives me flowers",
+  "Told me everything will be fine in temple",
+  "Gives me his shoulder ALWAYS to lean on",
+  "Comforts me",
+  "Gives me back hugs",
+  "He said he'll let me tie a bow on it",
+  "He thanked BTS cause they helped me",
+  "Sends me his cute pictures",
+  "Makes me wkwjwjkekek to the core",
+  "Finds everything I do cute and hot",
+  "Has such romantic dreams of us",
+  "Told me that I'm the greatest woman he met😭🤌🏻",
+  "Loves my family",
+  "Cares about me",
+  "He held my hands in front of Krishna",
+  "Said 'thinu nana' when asheesh passed in front of us",
+  "Screams I love you while driving",
+  "Tells me his family stuff 😭🤌🏻",
+  "He said he'll only marry me no matter what",
+  "Stops playing smash for me",
+  "Gives me compliments every day",
+  "Drives me back home",
+  "Drives when there's traffic",
+  "Studies together with me",
+  "Waits for me near the washroom",
+  "Picks up cute combination of flowers",
+  "Kisses me WITH SO MUCH LOVE",
+  "Adores my body",
+  "Finds the dumb shit I do 'cute'",
+  "Wipes away my sweat",
+  "Sends me cute reels",
+  "GIVES ME BUTTERFLIES EVEN IN CLASS 🥵",
+  "Scared of me a lil",
+  "Tells me the cutest sorries",
+  "Says 'fuxk me' in the most skshjsskkske way",
+  "Does it while looking at me",
+  "Sends me voice notes while driving",
+  "Communicates well if he's busy and can't talk",
+  "Is jealous in the most cutest way",
+  "Touches my feet 😭",
+  "Values my opinions",
+  "Hugs me while I cry",
+  "Believes in my capabilities",
+  "Made me confident",
+  "Made me more strong",
+  "Values my feelings",
+  "Is willing to spend money on me",
+  "Asks me cutely if I hate him after any fight",
+  "The way he calls me 'rithu' is my favv thing",
+  "Calls me 'lil baby'",
+  "Has skhsjdjdkj dreams about me",
+  "Has the most cutest reaction to my dumbest questions",
+  "Had the most random thoughts about us going to another land..which is sooooo fucking cute",
+  "Cried when he held my hand",
+  "Ties my lace...",
+  "Buys me kurkure 🥺",
+  "Scolds me if I don't eat my food 😭",
+  "Gets emotional out of love...do I deserve this?",
+  "Comes in auto for me",
+  "Tells me his owsjjskskek fantasies",
+  "HE IS SO DAMN CUTE THESE DAYS I WANNA SQUISH HIM",
+  "Let's me feed mirchi 🫠",
+  "The way he responded when I got a nightmare",
+  "The way he holds my neck..so hot",
+  "Has the most attractive body...those shoulders hands, biceps 🫠",
+  "His sexy ass that he shows off in v calls",
+  "His smile bro>>",
+  "Eeroju call lo when he was going crazy looking at me..saying 'devudaa' 🫠🫠",
+  "The most romantic call that we had...while looking at each other 😭",
+  "Studies together..on gmeet",
+  "The way he says 'please marry me'",
+  "Just him saying please is sjshskksks I would do ANYTHING",
+  "When he says 'nuv intha cute cute cheyaku'",
+  "When he looks at me when I'm not noticing",
+  "Makes me the happiest",
+  "His presence makes me forget everything",
+  "The way he's lil scared of me in the cutest way",
+  "When he uses bad words on guys who hurt me",
+  "Never forced me into doing anything",
+  "Gets turned on by me easily hehehe😁😁",
+  "Worships my body and it's so ejjsjsksk 😭",
+  "He makes me feel 'intha kana em kavali?'",
+  "Comes all the way home to drop me",
+  "Feeds me well",
+  "Takes good care of me",
+  "Did stargazing with me",
+  "Makes sure I am driving safe",
+  "Gives me kissies from his bike mirror",
+  "Is protective about me",
+  "Listens to my nonsense and calls it cute",
+  "Sings songs for me (even if he can't sing)",
+  "Plays romantic songs while driving me around",
+  "Laughs at my jokes even when they aren't funny",
+  "Always makes me feel like the most special person in the room",
+  "Picks me up when I'm down emotionally or physically",
+  "Worries about me like no one else does",
+  "Makes silly plans with me about our future",
+  "Always makes time for me no matter how busy he is",
+  "Is genuinely interested in my hobbies and dreams",
+  "Holds my hand firmly when I'm scared or nervous",
+  "His compliments feel so genuine they melt my heart",
+  "Tells me I’m the best thing that ever happened to him",
+  "Always stands up for me, no matter what",
+  "Takes care of every small detail to make me smile",
+  "His goofy side that only I get to see",
+  "Shares his deepest thoughts and feelings with me",
+  "When he listens to me rant and says, 'You're cute when you're angry.'",
+  "The way he reassures me when I overthink things",
+  "How he never judges me no matter what",
+  "Goes out of his way to make my days special",
+  "The little notes or messages he leaves for me",
+  "How he talks about our future together with excitement",
+  "His endless patience with me even when I'm at my worst",
+  "The way he says my name like it’s the sweetest word ever",
+  "How he remembers the smallest details about me",
+  "The way he encourages me to follow my dreams",
+  "His unwavering support in everything I do",
+  "Makes me feel loved every single day without fail",
+  "never forces me with anything", "lets me take my time", "is ready to accept me the way i am", "is there to remind me that i can do this", "supports me", "takes my side", "gets sad knowing i will get my periods soon", "says he’ll buy me stuff that i want, told that he’ll convince his family for dog", "loves my body odor", "completes my food for me" 
+];
+
+        const starsContainer = document.getElementById("starsContainer");
+        const reasonCard = document.getElementById("reasonCard");
+        const reasonNumber = document.getElementById("reasonNumber");
+        const reasonText = document.getElementById("reasonText");
+        const backgroundMusic = document.getElementById("backgroundMusic");
+        const musicStatus = document.getElementById("musicStatus");
+
+        reasons.forEach((reason, index) => {
+            const star = document.createElement("div");
+            star.classList.add("star");
+            star.innerHTML = "⭐";
+            star.onclick = () => showReason(index + 1, reason);
+
+            const number = document.createElement("div");
+            number.classList.add("star-number");
+            number.textContent = index + 1;
+
+            star.appendChild(number);
+            starsContainer.appendChild(star);
+        });
+
+        function showReason(number, text) {
+            reasonNumber.textContent = `Reason #${number}`;
+            reasonText.textContent = text;
+            reasonCard.style.display = "block";
+        }
+
+        function hideReason() {
+            reasonCard.style.display = "none";
+        }
+
+        function toggleMusic() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicStatus.textContent = "Pause Music";
+            } else {
+                backgroundMusic.pause();
+                musicStatus.textContent = "Play Music";
+            }
+        }
+    </script>
+    <script>
+        function createSparkle() {
+            const container = document.querySelector('.lyrics-container');
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            // Random sparkle characters for variety
+            const sparkleChars = ['✦', '★', '✴', '✷', '✧', '✯'];
+            sparkle.innerHTML = sparkleChars[Math.floor(Math.random() * sparkleChars.length)];
+            
+            // Enhanced coloring and sizing
+            const hue = Math.random() * 60 + 300; // Range from pink to purple
+            sparkle.style.color = `hsla(${hue}, 100%, 75%, ${Math.random() * 0.8 + 0.2})`;
+            sparkle.style.fontSize = `${Math.random() * 20 + 8}px`; // Bigger size range
+            
+            // Positioning with wider range
+            sparkle.style.left = `${Math.random() * 120 - 10}%`;
+            sparkle.style.top = `${Math.random() * 120 - 10}%`;
+            
+            container.appendChild(sparkle);
+        
+            // Remove sparkle after animation
+            setTimeout(() => {
+                sparkle.remove();
+            }, 1500);
+        }
+        
+        // Create sparkles more frequently
+        setInterval(createSparkle, 100); // Reduced from 200ms to 100ms
+        
+        // Create multiple sparkles at once
+        function createMultipleSparkles() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(createSparkle, i * 50);
+            }
+        }
+        
+        // Additional burst of sparkles every few seconds
+        setInterval(createMultipleSparkles, 2000);
+        </script>
+</body>
+</html>

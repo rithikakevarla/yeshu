@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>365 Day Jar</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .jar-container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            margin-top: -80px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            margin-bottom: 30px;
+            margin-top: -40px;
+        }
+
+        .jar {
+            width: 280px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 3px solid rgba(255, 105, 180, 0.5);
+            border-radius: 30px 30px 100px 100px;
+            position: relative;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .jar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+        }
+
+        .jar::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            height: 30px;
+            background: rgba(255, 105, 180, 0.3);
+            border-radius: 10px;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at 30% 30%,
+                rgba(255, 255, 255, 0.8),
+                rgba(255, 105, 180, 0.4)
+            );
+            box-shadow: 
+                inset -5px -5px 10px rgba(0, 0, 0, 0.1),
+                0 0 10px rgba(255, 255, 255, 0.3);
+            animation: float 4s infinite ease-in-out;
+            backdrop-filter: blur(2px);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-30px) translateX(10px) scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .message {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #ff69b4;
+            transition: opacity 0.5s ease;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            max-width: 80%;
+            margin: 20px auto;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            opacity: 0;
+        }
+
+        .date-display {
+            font-size: 1.1em;
+            margin-top: 15px;
+            color: white;
+            text-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+        }
+
+        #audio-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 105, 180, 0.3);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        #audio-control:hover {
+            transform: scale(1.1);
+            background: rgba(255, 105, 180, 0.5);
+        }
+
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 105, 180, 0.1), transparent);
+            animation: glowPulse 2s infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="jar-container">
+        <h1>365 Days of Love 🌟</h1>
+        <div class="date-display" id="currentDate"></div>
+        <div class="jar" onclick="openMessage()">
+            <div class="glow"></div>
+        </div>
+        <div class="message" id="messageDisplay"></div>
+    </div>
+
+    <div id="audio-control" onclick="toggleMusic()">🎵</div>
+
+    <audio id="bgMusic" loop>
+        <source src="music/deeper-than-it-seems.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        const jar = document.querySelector('.jar');
+        
+        // Create magical bubbles
+        for (let i = 0; i < 15; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 30 + 20;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 220 + 'px';
+            bubble.style.top = Math.random() * 280 + 'px';
+            bubble.style.animationDelay = Math.random() * 3 + 's';
+            
+            const hue = Math.random() * 30 - 15;
+            bubble.style.background = `radial-gradient(
+                circle at 30% 30%,
+                rgba(255, 255, 255, 0.8),
+                rgba(255, ${105 + hue}, ${180 + hue}, 0.4)
+            )`;
+            
+            jar.appendChild(bubble);
+        }
+
+        // Create sparkles
+        for (let i = 0; i < 30; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.top = Math.random() * 100 + 'vh';
+            sparkle.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(sparkle);
+        }
+
+        // Update current date
+        function updateDate() {
+            const date = new Date();
+            document.getElementById('currentDate').textContent = 
+                date.toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+        }
+        updateDate();
+
+        // Music controls
+        let isPlaying = false;
+        const music = document.getElementById('bgMusic');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                isPlaying = false;
+            } else {
+                music.play();
+                isPlaying = true;
+            }
+        }
+
+        // Message handling
+        const birthdayMessage = "I hope you liked what I did for your bday, I hope this gives u company, when im not around you. I really wish you have a great year this 2025, cheers to many more bdays together";
+        
+        const messages = [
+            "Your hugs feel like home. They remind me that no matter what happens, everything will be okay.",
+            "I admire how you face challenges head-on. Your courage gives me strength when I need it most.",
+            "Thank you for being my safe space. With you, I can be completely myself, and that's the greatest gift.",
+            "The little things you do – making me laugh, holding my hand, checking if I've eaten – they mean the world to me.",
+            "Thank you for showing me what real love feels like – patient, kind, and unconditional.",
+            "Hey sunshine! Just wanted you to start your day knowing how proud I am of your dedication. You've got this, and I've got your back. Make today count! 🌟",
+            "Good morning! Take things one step at a time today. You've got this.",
+            "Just wanted to say I'm proud of you. Have a good day ahead 💫",
+            "Hey! Remember to drink water. I care about you.",
+            "Starting my day thinking of you. Hope yours is wonderful ✨",
+            "Morning! Don't forget that you're doing your best, and that's perfect.",
+            "Good morning! Remember that it's okay to take it slow sometimes.",
+            "Sending you good vibes for the day ahead 🤗",
+            "Morning! Remember that you're loved, appreciated, and valued ❤️",
+            "Good morning! Take care of yourself today, okay?",
+            "good morning my love, dont skip your breakfast. i hope u have a good day!",
+            "all the very best, for whatever you are working hard for!",
+            "you deserve what you want, and ik you are working hard for it. have a good day yesh!",
+            "everythings GONNA BE OKAY. just do your best! i love you!",
+            "goodmorning my sweetboy, did u sleep well? today's gonna be good",
+            "its okay if you dont feel productive. its okay to take a break. but remember to come back on track.",
+            "take breaks, you deserve it. goodmorrrnrinnnnnngggg!!!",
+            "i hope you are doing okay, if not, i pray that things get better soon"
+        ];
+
+        function isBirthdayToday() {
+            const today = new Date();
+            return today.getMonth() === 0 && today.getDate() === 19; // January is 0
+        }
+
+        function getTodaysMessage() {
+            if (isBirthdayToday()) {
+                return birthdayMessage;
+            }
+            const today = new Date();
+            const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+            const index = seed % messages.length;
+            return messages[index];
+        }
+
+        function openMessage() {
+            const messageDisplay = document.getElementById('messageDisplay');
+            
+            messageDisplay.style.opacity = '0';
+            setTimeout(() => {
+                messageDisplay.textContent = getTodaysMessage();
+                messageDisplay.style.opacity = '1';
+            }, 500);
+
+            // Animation effect
+            jar.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                jar.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            music.volume = 0.5;
+            toggleMusic();
+            const messageDisplay = document.getElementById('messageDisplay');
+            messageDisplay.style.opacity = '0';
+        });
+    </script>
+</body>
+</html>

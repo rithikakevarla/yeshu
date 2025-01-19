@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Future</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite;
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: var(--opacity); }
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .title {
+            text-align: center;
+            color: #ff69b4;
+            font-size: 4em;
+            margin: 40px 0;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .tile {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(26, 0, 51, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+        }
+
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .tile:hover .flip-card {
+            transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+        }
+
+        .front {
+            background: linear-gradient(135deg, rgba(26, 0, 51, 0.9), rgba(255, 105, 180, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 105, 180, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .spotify-section {
+            text-align: center;
+            margin: 40px auto;
+            padding: 20px;
+            max-width: 800px;
+            background: rgba(26, 0, 51, 0.5);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 105, 180, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .spotify-heading {
+            color: #ff69b4;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+
+        .spotify-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .spotify-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255, 105, 180, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .spotify-link:hover {
+            background: rgba(255, 105, 180, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back {
+            background: rgba(26, 0, 51, 0.9);
+            transform: rotateY(180deg);
+            overflow: hidden;
+            border: 2px solid rgba(255, 105, 180, 0.2);
+        }
+
+        .back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Responsive grid adjustments */
+        @media (max-width: 1400px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #audio-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 0, 51, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .audio-control {
+            font-size: 2em;
+            cursor: pointer;
+            color: #ff69b4;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .audio-control:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkleAnim 1s linear forwards;
+            font-size: 20px;
+            z-index: 9999;
+        }
+
+        @keyframes sparkleAnim {
+            0% { 
+                transform: scale(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.2) rotate(180deg);
+            }
+            100% { 
+                transform: scale(0) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="container">
+        <h1 class="title">✨ Our Future ✨</h1>
+        <div class="grid">
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">cooking together <3</div>
+                    <div class="back"><img src="images/cook.jpg" alt="cooking together"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">travelling together</div>
+                    <div class="back"><img src="images/travel.jpg" alt="Dream 2"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">married</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/00/b7/03/00b703d2b78b97be398dbf3dcfec2e13.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">three</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/5c/ac/1d/5cac1d16b60e1f3978cb0e8b16cc5956.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">kashmir</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/61/77/fa/6177facb8e3cb2ea67c2eb21659f1a7b.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">together</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/94/ff/6f/94ff6fe75c827fcbc5247b09c44e5fae.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">car rides</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/90/54/fd/9054fde7f33704bef7de2f3ad0c2f280.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">years later</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/12/86/88/128688620c9204ca3d0e03cfc1190c72.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">fun</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/17/f4/61/17f461c236302e671cd74c0a02261be9.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">investing</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/ec/86/dc/ec86dc4b20ab6344c5c3e53ed60a3807.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">p</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/c4/00/d3/c400d3e7771e45a541d3f8cd35745786.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">life</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/17/6c/43/176c43dc16088c4a1c56c6df00466fb4.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">movie</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/dd/61/9b/dd619b36619d37ef9aa4826a8696b745.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">working out</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/04/d1/4b/04d14b861876a4c25bbffc13449ef624.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="flip-card">
+                    <div class="front">growing old</div>
+                    <div class="back"><img src="https://i.pinimg.com/474x/a9/2c/7e/a92c7e32d26ceb17aefeb48d002e135e.jpg" alt="Dream 3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="spotify-section">
+        <h2 class="spotify-heading">atleast here, I hope you open my pinterest boards :(</h2>
+        <div class="spotify-links">
+            <a href="https://pin.it/62oGHvM0x" class="spotify-link" target="_blank">yesh pics <3</a>
+            <a href="https://pin.it/2iNu3pzlX" class="spotify-link" target="_blank">house</a>
+            <a href="https://pin.it/6RfoykuIJ" class="spotify-link" target="_blank">with him </a>
+            <a href="https://pin.it/2DzoonKhP" class="spotify-link" target="_blank">my mannn</a>
+            <a href="https://pin.it/3ud2r2YlA" class="spotify-link" target="_blank">nabi</a>
+            <a href="https://pin.it/FF2BtKl4C" class="spotify-link" target="_blank">love..?</a>
+            <a href="https://pin.it/3ENvTFgbS" class="spotify-link" target="_blank">wed</a>
+            <a href="https://pin.it/3i7Dr1Vtj" class="spotify-link" target="_blank">life i dream of</a>
+            <a href="https://pin.it/8U8rOxzbi" class="spotify-link" target="_blank">bubu dudu</a>
+        </div>
+    </div>
+
+    <div id="audio-player">
+        <div class="audio-control" onclick="toggleMusic()">🎵</div>
+        <audio id="bgMusic" loop>
+            <source src="music/deeper-than-it-seems.mp3" type="audio/mp3">
+        </audio>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            animateTiles();
+        });
+
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                star.style.setProperty('--opacity', `${Math.random() * 0.7 + 0.3}`);
+
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Sparkle effect on mouse move
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.8) {
+                const sparkleTypes = ['✨', '⭐', '🌟', '✴️'];
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerHTML = sparkleTypes[Math.floor(Math.random() * sparkleTypes.length)];
+                
+                const offset = 20;
+                const randomX = (Math.random() - 0.5) * offset;
+                const randomY = (Math.random() - 0.5) * offset;
+                
+                sparkle.style.left = (e.pageX + randomX - 10) + 'px';
+                sparkle.style.top = (e.pageY + randomY - 10) + 'px';
+                document.body.appendChild(sparkle);
+
+                const size = Math.random() * 10 + 15;
+                sparkle.style.fontSize = size + 'px';
+
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        });
+
+        function animateTiles() {
+            const tiles = document.querySelectorAll('.tile');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            tiles.forEach(tile => {
+                observer.observe(tile);
+            });
+        }
+
+        let isPlaying = false;
+        const bgMusic = document.getElementById('bgMusic');
+        
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                document.querySelector('.audio-control').textContent = '🎵';
+            } else {
+                bgMusic.play();
+                document.querySelector('.audio-control').textContent = '🔊';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('dragstart', e => e.preventDefault());
+        });
+    </script>
+</body>
+</html>
+
+
+
+

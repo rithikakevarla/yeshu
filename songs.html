@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Songs That Remind Me of You</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            z-index: 10;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            background: #ff1493;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #ff69b4;
+            margin: 40px 0;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: fadeIn 2s ease-in;
+        }
+
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .song-card {
+            position: relative;
+            aspect-ratio: 1;
+            background: rgba(255, 105, 180, 0.1);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            overflow: hidden;
+        }
+
+        .song-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(255, 105, 180, 0.2);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+
+        .song-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: spin 4s linear infinite;
+        }
+
+        .song-card:hover .song-icon {
+            animation: spin 2s linear infinite;
+        }
+
+        .song-title {
+            font-size: 14px;
+            color: #ff69b4;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+            text-align: center;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(26, 0, 51, 0.95);
+            border-radius: 20px;
+            border: 2px solid #ff69b4;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+        }
+
+        .modal img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: #ff69b4;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-button:hover {
+            transform: scale(1.2);
+        }
+
+        .playlist-link {
+            text-align: center;
+            margin: 40px 0;
+            padding: 20px;
+        }
+
+        .playlist-link a {
+            color: #ff69b4;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 24px;
+            border: 2px solid #ff69b4;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .playlist-link a:hover {
+            background: #ff69b4;
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .songs-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                margin: 30px 0;
+            }
+        }
+
+        #music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff69b4;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        #glowingText {
+        color: #ff69b4; /* Soft pink */
+        font-size: 1.2rem;
+        font-style: italic;
+        text-align: center;
+        margin: 20px auto;
+        max-width: 800px;
+        line-height: 1.8;
+        text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff69b4;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 5px #e02d87, 0 0 10px #e02d87, 0 0 15px #e02d87;
+        }
+        to {
+            text-shadow: 0 0 10px #e02d87, 0 0 20px #e02d87, 0 0 30px #e02d87;
+        }
+    }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Back</a>
+
+    <div class="container">
+        <h1>Songs That Remind Me of You</h1>
+        <p id="glowingText">
+            Before you, music was just music. Now, every song that reminds me of you feels like a piece of our story. 
+            It’s crazy how I’ll hear a lyric and suddenly think of something you said or did, or even just the way you make me feel. 
+            These songs aren’t just songs anymore—they’re snapshots of us.
+            Every time they play, it’s like the universe is pressing ‘rewind’ on my favorite moments with you.
+        </p>
+
+        <div class="songs-grid" id="songsGrid"></div>
+
+        <div class="playlist-link">
+            <a href="https://open.spotify.com/playlist/739S3EXAPAvhKQHszfnkqS?si=tbjKt-AkSFugCyoYAlgtkg&pi=L5_SAnqWTSW7g" target="_blank">
+                Listen on Spotify 🎵
+            </a>
+        </div>
+    </div>
+
+    <div id="songModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">×</span>
+            <img id="modalImage" src="" alt="Song Image">
+        </div>
+    </div>
+
+    <button id="music-toggle" onclick="toggleMusic()">Play Music</button>
+
+    <audio id="audio" src="music/young_and_beautiful.mp3" preload="auto"></audio>
+
+    <script>
+        // List of song names and image paths
+        const songs = [
+            { name: "yellow-coldplay", image: "https://i.pinimg.com/474x/a0/05/49/a00549795db7d6e143ce206ac4248c79.jpg" },
+            {name:"those eyes-new west", image:"https://i.pinimg.com/474x/2e/b1/cc/2eb1ccf0428b799c5833bd02732121e1.jpg"},
+            { name: "perfect - ed sheeran", image: "https://i.pinimg.com/474x/4f/1c/3b/4f1c3b7a43c1584f349c9cf276d028a3.jpg" },
+            { name: "Christmas tree-V", image: "https://i.pinimg.com/474x/de/10/5b/de105b535173eee302417c6f98a646b5.jpg" },
+            { name: "until i found you", image: "https://i.pinimg.com/474x/82/74/9d/82749d2b984cb79cf71572050c9a0de4.jpg" },
+            { name: "dusk till dawn-zayn", image: "https://i.pinimg.com/474x/81/45/d8/8145d820ac3e2a7ee56b9d9e78da0b84.jpg" },
+            { name: "saturn-sleeping at last", image: "https://i.pinimg.com/474x/17/80/44/1780447fa2f29ed3493d8fbee4c2bdb1.jpg" },
+            { name: "those eyes-new west", image: "https://i.pinimg.com/474x/80/fa/d2/80fad2db2852128cee370566547186a2.jpg" },
+            { name: "nothing-bruno major", image: "https://i.pinimg.com/474x/56/2d/50/562d505286c7d172b9c359748b41b892.jpg" },
+            { name: "treehouse", image: "https://i.pinimg.com/474x/bb/54/4d/bb544dfe7fc3578e5edf6acb81a1e191.jpg" },
+            { name: "yellow", image: "https://i.pinimg.com/474x/70/16/d8/7016d860a68c7840e13a32251bb28d77.jpg" },
+            { name: "in agreement", image: "https://i.pinimg.com/474x/3c/4b/27/3c4b274283c6b3c41b2fa4f085b0dc7a.jpg" },
+            { name: "young and beautiful-lana del ray", image: "https://i.pinimg.com/474x/81/9d/53/819d5346f9f342ddacb95d462919ce0b.jpg" },
+            { name: "slut-taylor swift", image: "https://i.pinimg.com/474x/9e/22/ec/9e22ec8b92d7cff0aeba57d457e4dea0.jpg" },
+            { name: "dandelions", image: "https://i.pinimg.com/474x/79/5c/1b/795c1ba57099bb5deee9bd3233a1c807.jpg" },
+            { name: "perfect-ed sheeran", image: "https://i.pinimg.com/474x/3c/c5/25/3cc52585ba9f4895057cb9756c42c92e.jpg" },
+            { name: "summer time sadness-lana", image: "https://i.pinimg.com/474x/48/de/59/48de594b2d475bd290e86f659afd638d.jpg" },
+            { name: "hype boy-new jeans", image: "https://i.pinimg.com/736x/52/1c/97/521c97d656b9949918febc3af4b10fdd.jpg" },
+            { name: "brooklyn baby-lana del ray", image: "https://i.pinimg.com/474x/57/56/59/575659799bdc8d6d35e717b59c466fc6.jpg" },
+            { name: "cardigan-taylor swift", image: "https://i.pinimg.com/736x/52/1c/97/521c97d656b9949918febc3af4b10fdd.jpg" },
+            { name: "24 hours-shawn mendes", image: "https://i.pinimg.com/474x/ae/0e/32/ae0e3212f4a2ef65d20ae1932f406dc3.jpg" },
+            { name: "today was a fairy tale-taylor swift", image: "https://i.pinimg.com/736x/80/dd/fd/80ddfd03b2fa6d0f42801e3cd3cfb172.jpg" },
+            { name: "best friend", image: "https://i.pinimg.com/474x/1b/b4/8d/1bb48d92ccd1ba9ebf21d0d938850d17.jpg" },
+            { name: "dandelions", image: "https://i.pinimg.com/474x/00/68/3c/00683ce6f25e46c0dedc92a05bf78892.jpg" },
+            { name: "bubble gum bitch", image: "https://i.pinimg.com/474x/66/5c/a5/665ca54577f2b1e92c118b46cf71ca83.jpg" },
+            {name:"locked out of heaven", image:"https://i.pinimg.com/474x/1a/af/9f/1aaf9fd670897ec0bbff54d9e0dd6973.jpg"},
+            {name:"pretty when u cry", image:"https://i.pinimg.com/474x/bd/b3/7a/bdb37a33d70aeb1f2cba09b9cc98c387.jpg"},
+            {name:"pillow talk", image:"https://i.pinimg.com/474x/62/69/48/626948b011be96e2e50f5ba547e56cd0.jpg"},
+            {name:"iris",image:"https://i.pinimg.com/474x/b3/28/5c/b3285c3dfdd097b1960a050c629b38a9.jpg"},
+            {name:"video games",image:"https://i.pinimg.com/474x/f8/7d/10/f87d10493d8e587e18ec1aaf57151146.jpg"},
+
+            // Add more songs as needed
+        ];
+
+        const songsGrid = document.getElementById("songsGrid");
+
+        // Dynamically add song cards
+        songs.forEach(song => {
+            const card = document.createElement("div");
+            card.classList.add("song-card");
+            card.innerHTML = `
+                <div class="song-icon">💿</div>
+                <div class="song-title">${song.name}</div>
+            `;
+            card.addEventListener("click", () => showModal(song));
+            songsGrid.appendChild(card);
+        });
+
+        // Open modal with song image
+        function showModal(song) {
+            const modal = document.getElementById("songModal");
+            const modalImage = document.getElementById("modalImage");
+            modal.style.display = "block";
+            modalImage.src = song.image;
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById("songModal");
+            modal.style.display = "none";
+        }
+
+        // Toggle music play/pause
+        function toggleMusic() {
+            const audio = document.getElementById("audio");
+            const button = document.getElementById("music-toggle");
+
+            if (audio.paused) {
+                audio.play();
+                button.textContent = "Pause Music";
+            } else {
+                audio.pause();
+                button.textContent = "Play Music";
+            }
+        }
+    </script>
+</body>
+</html>

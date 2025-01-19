@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Beautiful Memories</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1a0033, #000000);
+            font-family: Arial, sans-serif;
+            color: white;
+            position: relative;
+        }
+
+        .container {
+            padding: 2rem;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff69b4;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
+            to { text-shadow: 0 0 20px rgba(255, 105, 180, 0.8), 0 0 30px rgba(255, 105, 180, 0.6); }
+        }
+
+        .memory-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .polaroid-wrapper {
+            position: relative;
+            height: 400px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .polaroid-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .polaroid-wrapper.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .polaroid-front, .polaroid-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+            transform-style: preserve-3d;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .polaroid-back {
+            transform: rotateY(180deg);
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .photo-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 3px;
+            margin-bottom: 15px;
+        }
+
+        .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .caption {
+            text-align: center;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .date {
+            text-align: right;
+            font-size: 0.8em;
+            color: #ff69b4;
+            font-weight: bold;
+        }
+
+        .memory-details {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        .memory-details h3 {
+            color: #ff69b4;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .memory-details p {
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .memory-details .location {
+            color: #666;
+            font-style: italic;
+            margin-top: auto;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            background: #ff1493;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        #audio-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 105, 180, 0.3);
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        #audio-control:hover {
+            transform: scale(1.1);
+            background: rgba(255, 105, 180, 0.5);
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #ff69b4;
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .memory-wall {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .polaroid-wrapper {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Back</a>
+    <div id="audio-control" onclick="toggleMusic()">🎵</div>
+
+    <audio id="bgMusic" loop>
+        <source src="music/jab_tak.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="container">
+        <h1>✨ Our Beautiful Story ✨</h1>
+
+        <div class="memory-wall" id="memoryWall">
+            <!-- Example memory cards - Replace with your content -->
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/date1.jpeg" alt="First Date" class="photo">
+                    </div>
+                    <div class="caption">our first date.</div>
+                    <div class="date">may 2nd, 2024</div>
+                    <!-- <div class="flip-hint">Click to flip ↻</div> -->
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>Our First Date ❤️</h3>
+                        <p>Remember how nervous we both were? You wore that beautiful white shirt, and we talked for hours about random stuff.</p>
+                        <p>You ordered paya, and I couldn't believe you made me eat that. later on you took me to amb and we were just window shopping laughing like idiots.</p>
+                        <div class="location">📍 telugu medium</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/hands.jpg" alt="First Date" class="photo">
+                    </div>
+                    <div class="caption">shitty 3-1</div>
+                    <div class="date">3-1</div>
+                    <!-- <div class="flip-hint">Click to flip ↻</div> -->
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>my shitty 3-1 starting</h3>
+                        <p>i used to miss u so damn much and seeing u used to make me happppppyyyyyyyyy as f</p>
+                        <p>i remember how after so many days we felt sifubcjd holding hands and i loved that moment.</p>
+                        <div class="location">📍 310</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/lake.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">lake</div>
+                    <div class="date">evening?</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>our plant!</h3>
+                        <p>i remember missing u and came to meet me.</p>
+                        <p>will remain as one of our fav picstures so far</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/gympic.jpg" alt="First Date" class="photo">
+                    </div>
+                    <div class="caption">gym days</div>
+                    <div class="date">nights</div>
+                    <!-- <div class="flip-hint">Click to flip ↻</div> -->
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>gym days</h3>
+                        <p>those days when u used to send me a gym pic everyday i used to wait for them</p>
+                        <p>i love how you are putting efforts to this. proud of you</p>
+                        <div class="location">📍 310</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/gym.jpg" alt="First Date" class="photo">
+                    </div>
+                    <div class="caption">gym calls</div>
+                    <div class="date">nights</div>
+                    <!-- <div class="flip-hint">Click to flip ↻</div> -->
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>gym days</h3>
+                        <p>those days when u used to call me everyday after ur gym or before it.i used to wait for them</p>
+                        <p>on days when u only spoke to me saying that u wanted to talk>>>>>></p>
+                        <div class="location">📍 310</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/lace.jpeg" alt="Beach Trip" class="photo">
+                    </div>
+                    <div class="caption">when you tied my lace</div>
+                    <div class="date">4th march</div>
+                    <!-- <div class="flip-hint">Click to flip ↻</div> -->
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>the 1st hint u gave me</h3>
+                        <p>remember how i told you, i want a guy who would tie my show lace and you did that for me.</p>
+                        <p>i couldnt stop blushing and giggling about this. </p>
+                        <div class="location">📍 kmit</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add more memory cards here -->
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/flower.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">flowers u give me</div>
+                    <div class="date">clg time</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>flowers u give me</h3>
+                        <p>thanksssss for all the pretty pretty flowers that u give me</p>
+                        <p>you deserve moreeeeee :|</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/drive.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">driving</div>
+                    <div class="date">after college</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>driving me home</h3>
+                        <p>thanks for droppping me home even though its exhausting, you have done that all most every time i came in auto.</p>
+                        <p>thankkkkkkkkyouuuuuuuuu kanna!</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/myfav.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">cafe</div>
+                    <div class="date">when i missed you</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>at a cafe</h3>
+                        <p>something about this pictures warms my heart. its soooooo soooo special</p>
+                        <p>we look so squishable and cute in those pics.</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/plant.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">our plant</div>
+                    <div class="date">some smcs class</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>our plant!</h3>
+                        <p>i remember how i drew a plant and then u continued to water it and i drew another flower?</p>
+                        <p>lets water out relationship the same way</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/bikes.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">bikesssuuu</div>
+                    <div class="date">every morning</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>our bikes<3</h3>
+                        <p>its sooooo cute in the evening when i see u come park ur bike near mine. i used to miss u as we had different timings</p>
+                        <p>seeing this at 4.30 used to warm my heart.</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/lab.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">labs</div>
+                    <div class="date">os lab</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>vlogs day<3</h3>
+                        <p>i remember how we took vlogs in that os lab, where we just roasted each other and made fun of each other while filming it.</p>
+                        <p>i roasted u with that friend of yours from school</p>
+                        <div class="location">📍 os lab</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/nataka.jpeg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">nataka</div>
+                    <div class="date">10th march</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>sripad's birthday</h3>
+                        <p>ig this was my fav part/phase of our relationship it was so woliaefkjhrg</p>
+                        <p>the way we used to msg each other at nights and spam before we sleep abt what we think of each other is so special</p>
+                        <div class="location">nataka</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/labs.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">labs</div>
+                    <div class="date">os lab</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>vlogs day<3</h3>
+                        <p>i remember how we took vlogs in that os lab, where we just roasted each other and made fun of each other while filming it.</p>
+                        <p>i roasted u with that friend of yours from school</p>
+                        <div class="location">📍 os lab</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/kiss.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">kmit evening</div>
+                    <div class="date">evening</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>when i dared to kiss you on ur wound</h3>
+                        <p>i couldnt see u going thru that pain when u got hurt that day. i had this string urge to kiss u on ur hand</p>
+                        <p>i still dont understand how i could do it. but im happy that i did.</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/navras.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">navras</div>
+                    <div class="date">evening</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>our plant!</h3>
+                        <p>i like it so much, seeing you dance ur heart out made me so happyyyyys</p>
+                        <p>cutu<3</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/temple.jpeg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">temple</div>
+                    <div class="date">dk</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>that day in temple</h3>
+                        <p>i remember the look u gave me when u saw me near tej's hostel that day. it felt like a scene from a movie</p>
+                        <p>the way we both told each other "everything will be fine soon" was the cutest thing ever. thankyou sm</p>
+                        <div class="location">iscon temple</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <div class="polaroid-front">
+                    <div class="photo-container">
+                        <img src="images/bday.jpg" alt="New Memory" class="photo">
+                    </div>
+                    <div class="caption">when u were mad on my bday</div>
+                    <div class="date">18th jan</div>
+                </div>
+                <div class="polaroid-back">
+                    <div class="memory-details">
+                        <h3>when u were angry on my bday!</h3>
+                        <p>i remember how angry you were on my bday cause u werent included. but it was so cute and special although it scared me, it made me realise how special i am to you.</p>
+                        <div class="location">📍 location</div>
+                    </div>
+                </div>
+            </div>
+
+
+            
+        </div>
+    </div>
+
+    <script>
+        let isPlaying = true;
+        const music = document.getElementById('bgMusic');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                isPlaying = false;
+                document.getElementById('audio-control').style.opacity = '0.5';
+            } else {
+                music.play();
+                isPlaying = true;
+                document.getElementById('audio-control').style.opacity = '1';
+            }
+        }
+
+        // Initialize flip functionality
+        document.querySelectorAll('.polaroid-wrapper').forEach(polaroid => {
+            polaroid.addEventListener('click', function() {
+                this.classList.toggle('flipped');
+            });
+        });
+
+        // Start playing music when page loads
+        window.addEventListener('load', function() {
+            music.play();
+        });
+    </script>
+</body>
+</html>
