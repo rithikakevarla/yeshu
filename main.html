@@ -13,23 +13,24 @@
             color: white;
             overflow: hidden;
         }
-        #audio-control {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(255, 105, 180, 0.3);
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
 
-#audio-control:hover {
-    transform: scale(1.1);
-    background: rgba(255, 105, 180, 0.5);
-    box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
-}
+        #audio-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 105, 180, 0.3);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        #audio-control:hover {
+            transform: scale(1.1);
+            background: rgba(255, 105, 180, 0.5);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+        }
 
         .container {
             display: flex;
@@ -41,13 +42,14 @@
             position: relative;
             z-index: 1;
         }
+
         .star-text {
-        font-size: 1.2em;
-        margin-top: 15px;
-        color: #ff69b4;
-        font-weight: bold;
-        text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
-        animation: fadeIn 2s ease-in;
+            font-size: 1.2em;
+            margin-top: 15px;
+            color: #ff69b4;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: fadeIn 2s ease-in;
         }
 
         h1 {
@@ -124,17 +126,6 @@
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
-        }
-
-        #audio-control {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255, 105, 180, 0.3);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 2;
         }
 
         .loading-screen {
@@ -217,6 +208,35 @@
         .close-button:hover {
             transform: scale(1.1);
         }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+        }
+
+        .close-video {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -259,6 +279,20 @@
         </div>
     </div>
 
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <div class="close-video" onclick="closeVideo()">×</div>
+            <iframe 
+                width="100%" 
+                height="100%" 
+                src=""
+                id="videoFrame"
+                allowfullscreen
+                allow="autoplay">
+            </iframe>
+        </div>
+    </div>
+
     <script>
         function createConfetti() {
             const colors = ['#ff69b4', '#87CEEB', '#98FB98', '#DDA0DD', '#FFD700'];
@@ -294,8 +328,25 @@
         }
 
         function playVideo() {
-            window.location.href = "videos/sample.mp4";
+            const modal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            videoFrame.src = "https://drive.google.com/file/d/1oTH16JvioufX46EfPFlz1Gyt0kzU865V/preview";
+            modal.style.display = 'flex';
         }
+
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            videoFrame.src = ''; // Clear the source to stop the video
+            modal.style.display = 'none';
+        }
+
+        // Close video modal when clicking outside
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
 
         function showGuide() {
             document.getElementById('guidePopup').style.display = 'flex';
